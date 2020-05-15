@@ -33,7 +33,9 @@ export default {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [],
+  plugins: [
+    './plugins/mixins/user.js',
+  ],
   /*
   ** Nuxt.js dev-modules
   */
@@ -44,12 +46,15 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/auth',
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
-  axios: {},
+  axios: {
+    baseURL: "http://backend.test/api",
+  },
   /*
   ** Build configuration
   */
@@ -58,6 +63,18 @@ export default {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
+    }
+  },
+  auth: {
+    // Options
+    strategies: {
+      local: {
+        endpoints: {
+          login: {url: 'login', method: 'post', propertyName: 'meta.token'},
+          user: {url: 'user', method: 'get', propertyName: 'data'},
+          logout: {url: 'logout', method: 'post'},
+        }
+      }
     }
   }
 }
