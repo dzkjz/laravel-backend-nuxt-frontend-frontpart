@@ -6,12 +6,12 @@
       <div class="form-group">
         <label>Email address</label>
         <input type="email" class="form-control" v-model.trim="form.email" autofocus>
-        <small class="form-text text-danger">Show errors here</small>
+        <small class="form-text text-danger" v-if="errors.email">{{errors.email[0]}}</small>
       </div>
       <div class="form-group">
         <label>Password</label>
         <input type="password" class="form-control" v-model.trim="form.password" autofocus>
-        <small class="form-text text-danger">Show errors here</small>
+        <small class="form-text text-danger" v-if="errors.password">{{errors.password[0]}}</small>
       </div>
       <button type="submit" class="btn btn-primary">Login</button>
     </form>
@@ -35,9 +35,13 @@
     },
     methods: {
       async submit() {
-        await this.$auth.loginWith('local', {
-          data: this.form,
-        });
+        try {
+          await this.$auth.loginWith('local', {
+            data: this.form,
+          });
+        } catch (e) {
+          return;
+        }
         this.$router.push('/');
       },
     }

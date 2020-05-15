@@ -35,6 +35,8 @@ export default {
   */
   plugins: [
     './plugins/mixins/user.js',
+    './plugins/axios.js',
+    './plugins/mixins/validation.js',
   ],
   /*
   ** Nuxt.js dev-modules
