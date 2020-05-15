@@ -25,6 +25,7 @@
 <script>
   export default {
     name: "login",
+    middleware: ['guest',],
     data() {
       return {
         form: {
@@ -42,7 +43,11 @@
         } catch (e) {
           return;
         }
-        this.$router.push('/');
+
+        //redirect
+        this.$router.push({
+          path: this.$route.query.redirect || '/profile',
+        });
       },
     }
 
