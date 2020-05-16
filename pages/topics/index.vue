@@ -18,6 +18,10 @@
       <div v-for="(content,index) in topic.posts" :key="index" class="ml-5 content">
         {{content.body}}
         <p class="text-muted">{{content.created_at}} by {{content.user.name}}</p>
+
+        <div class="btn btn-outline-primary fa fa-thumbs-up ml-5 mb-2" @click="likePost(topic.id, content)">
+          <span class="badge">{{content.like_count}}</span>
+        </div>
       </div>
     </div>
     <nav>
@@ -52,14 +56,46 @@
           return;
         }
         let {data, links} = await this.$axios.$get(key);
-        return this.topics = {...this.topics, ...data};
+        return this.topics = data;
       },
       async deleteTopic(id) {
 
         await this.$axios.$delete(`/topics/${id}`);
 
         this.$router.push('/');
-      }
+      },
+      async likePost(topicId, post) {
+
+        //get user data
+        let userFromVuex = this.$store.getters['user'];
+        if (userFromVuex) {
+          // cant like your own post
+          if (userFromVuex.id === post.user.id) {
+            alert('You cant like your own post');
+            return;
+          }
+          // if user have already liked
+          if (post.users_like_this) {
+            if (post.users_like_this.some(user => user.id === userFromVuex.id)) {
+              alert('You have already liked this post');
+            } else {
+              await this.$axios.$post(`/topics/${topicId}/posts/${post.id}/likes`);
+
+              //update data
+              let {data, links} = await this.$axios.$get(`/topics`);
+
+              this.topics = data;
+              this.links = links;
+
+            }
+          }
+        } else {
+          alert('Please log in')
+          this.$router.push('/login');
+        }
+
+
+      },
     }
   }
 </script>
